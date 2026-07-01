@@ -510,3 +510,71 @@ Closures work because functions maintain a reference to the lexical environment 
 * Closures depend on lexical environments.
 * JavaScript uses lexical (static) scoping.
 
+# Scope Chain
+
+## What is a Scope Chain?
+
+A **Scope Chain** is the mechanism JavaScript uses to find variables.
+
+If a variable is not found in the current scope, JavaScript searches in the parent scope, continuing until it reaches the global scope.
+
+---
+
+## Example
+
+```javascript
+const a = 10;
+
+function outer() {
+    const b = 20;
+
+    function inner() {
+        console.log(a, b);
+    }
+
+    inner();
+}
+
+outer();
+```
+
+### Variable Lookup
+
+```text
+inner() → outer() → Global
+```
+
+JavaScript checks each scope one by one until it finds the variable.
+
+---
+
+## Lexical Scoping
+
+JavaScript uses **lexical (static) scoping**.
+
+Variables are resolved based on **where a function is defined**, not where it is called.
+
+```javascript
+const name = "Global";
+
+function printName() {
+    console.log(name);
+}
+
+function test() {
+    const name = "Local";
+    printName();
+}
+
+test(); // Global
+```
+
+---
+
+## Interview Points
+
+* Scope chain is formed using lexical environments.
+* Variable lookup always starts from the current scope.
+* JavaScript follows lexical (static) scoping.
+* The search stops once the variable is found.
+* If the variable is not found anywhere, a `ReferenceError` is thrown.
