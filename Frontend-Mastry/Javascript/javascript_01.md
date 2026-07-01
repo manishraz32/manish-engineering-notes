@@ -251,3 +251,262 @@ Two phases:
 ### What data structure manages execution contexts?
 
 The **Call Stack**, which follows the **LIFO (Last In, First Out)** principle.
+
+
+# Lexical Environment
+
+## Intuition
+
+Think of a lexical environment as a **box that stores variables and functions**.
+
+Every time JavaScript creates an execution context, it also creates a new lexical environment.
+
+Each box knows two things:
+
+1. What variables and functions it owns.
+2. Where its parent box is.
+
+Because of this parent reference, JavaScript can search for variables outside the current function.
+
+---
+
+## Internal Structure
+
+A lexical environment consists of two parts:
+
+```text
+Lexical Environment
+│
+├── Environment Record
+│   ├── name = "Manish"
+│   ├── age = 30
+│   └── greet = function
+│
+└── Outer Environment Reference
+    └── Global Environment
+```
+
+### Environment Record
+
+Stores:
+
+* Variables
+* Function declarations
+* Function parameters
+
+### Outer Environment Reference
+
+Points to the parent scope.
+
+This allows JavaScript to access variables from outer functions.
+
+---
+
+## Example
+
+```javascript
+const country = "India";
+
+function person() {
+    const name = "Manish";
+
+    function greet() {
+        console.log(name);
+        console.log(country);
+    }
+
+    greet();
+}
+
+person();
+```
+
+---
+
+## How JavaScript Searches for Variables
+
+When `greet()` executes:
+
+### Step 1: Search inside `greet`
+
+```text
+greet()
+```
+
+```javascript
+console.log(name);
+```
+
+`name` does not exist here.
+
+---
+
+### Step 2: Move to the parent environment
+
+```text
+person()
+```
+
+```javascript
+const name = "Manish";
+```
+
+Found!
+
+---
+
+### Step 3: Search for `country`
+
+```javascript
+console.log(country);
+```
+
+Not found in `greet()`.
+
+Not found in `person()`.
+
+Move to:
+
+```text
+Global Environment
+```
+
+```javascript
+const country = "India";
+```
+
+Found!
+
+---
+
+## Visual Representation
+
+```text
+Global Environment
+│
+├── country = "India"
+│
+└── person()
+    │
+    ├── name = "Manish"
+    │
+    └── greet()
+```
+
+Every environment knows who its parent is.
+
+---
+
+## Important Point
+
+JavaScript uses **where functions are written**, not where they are called.
+
+This is called **lexical scoping**.
+
+The word *lexical* means:
+
+> Based on the physical structure of the code.
+
+---
+
+## Example
+
+```javascript
+const x = 10;
+
+function printX() {
+    console.log(x);
+}
+
+function test() {
+    const x = 20;
+
+    printX();
+}
+
+test();
+```
+
+Output:
+
+```text
+10
+```
+
+Many beginners expect:
+
+```text
+20
+```
+
+But `printX()` was created in the global scope.
+
+Therefore, it uses the global `x`.
+
+---
+
+## Relationship with Closures
+
+Closures exist because functions remember their lexical environment.
+
+```javascript
+function counter() {
+    let count = 0;
+
+    return function () {
+        count++;
+        console.log(count);
+    };
+}
+
+const increment = counter();
+
+increment(); // 1
+increment(); // 2
+```
+
+Even after `counter()` finishes, the inner function still remembers:
+
+```javascript
+let count = 0;
+```
+
+That memory comes from the lexical environment.
+
+---
+
+## Interview Questions
+
+### What is a lexical environment?
+
+A lexical environment is an internal JavaScript structure that stores variables, functions, and a reference to its parent environment.
+
+---
+
+### When is a lexical environment created?
+
+Whenever an execution context is created.
+
+---
+
+### Why is it called lexical?
+
+Because variable lookup depends on where code is written (its lexical structure), not where functions are called.
+
+---
+
+### How are closures related to lexical environments?
+
+Closures work because functions maintain a reference to the lexical environment in which they were created.
+
+---
+
+## Key Takeaways
+
+* Every execution context creates a lexical environment.
+* A lexical environment stores variables and functions.
+* It also stores a reference to its parent environment.
+* Variable lookup happens through these parent references.
+* Closures depend on lexical environments.
+* JavaScript uses lexical (static) scoping.
+
