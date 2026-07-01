@@ -578,3 +578,172 @@ test(); // Global
 * JavaScript follows lexical (static) scoping.
 * The search stops once the variable is found.
 * If the variable is not found anywhere, a `ReferenceError` is thrown.
+
+# Hoisting
+
+## What is Hoisting?
+
+Hoisting is JavaScript's behavior of processing declarations before code execution begins.
+
+Only declarations are hoisted, not assignments.
+
+---
+
+## `var` Hoisting
+
+```javascript
+console.log(a);
+
+var a = 10;
+```
+
+Output:
+
+```text
+undefined
+```
+
+JavaScript internally treats it as:
+
+```javascript
+var a;
+
+console.log(a);
+
+a = 10;
+```
+
+---
+
+## Function Hoisting
+
+Function declarations are fully hoisted.
+
+```javascript
+greet();
+
+function greet() {
+    console.log("Hello");
+}
+```
+
+Output:
+
+```text
+Hello
+```
+
+---
+
+## Function Expression
+
+```javascript
+sayHi();
+
+var sayHi = function () {
+    console.log("Hi");
+};
+```
+
+Output:
+
+```text
+TypeError: sayHi is not a function
+```
+
+---
+
+## `let` and `const`
+
+```javascript
+console.log(x);
+
+let x = 10;
+```
+
+Output:
+
+```text
+ReferenceError
+```
+
+They are hoisted but remain inside the **Temporal Dead Zone (TDZ)** until initialization.
+
+---
+
+## Interview Points
+
+* `var` is hoisted and initialized with `undefined`.
+* Function declarations are completely hoisted.
+* Function expressions behave like variables.
+* `let` and `const` are hoisted but cannot be accessed before initialization.
+* Hoisting happens during the creation phase of the execution context.
+
+# Temporal Dead Zone (TDZ)
+
+## What is TDZ?
+
+The **Temporal Dead Zone (TDZ)** is the time between entering a scope and initializing a `let` or `const` variable.
+
+Accessing the variable during this period throws a `ReferenceError`.
+
+---
+
+## Example
+
+```javascript
+console.log(age);
+
+let age = 25;
+```
+
+Output:
+
+```text
+ReferenceError: Cannot access 'age' before initialization
+```
+
+---
+
+## Timeline
+
+```text
+Scope Starts
+    ↓
+TDZ
+    ↓
+let age = 25
+    ↓
+Variable Accessible
+```
+
+---
+
+## Why Does TDZ Exist?
+
+TDZ prevents accidental access to variables before they are initialized, making code safer and easier to debug.
+
+---
+
+## `const` and TDZ
+
+```javascript
+const PI = 3.14;
+```
+
+Rules:
+
+* Must be initialized during declaration.
+* Cannot be reassigned.
+* Remains in TDZ until initialization.
+
+---
+
+## Interview Points
+
+* `let` and `const` are hoisted.
+* They are not initialized during the creation phase.
+* Accessing them before initialization throws a `ReferenceError`.
+* TDZ improves code safety and predictability.
+* TDZ exists only for `let` and `const`, not for `var`.
+
